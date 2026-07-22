@@ -406,21 +406,20 @@ const AppSettings = (function(){
 
   function save(){ Storage.set('entries', entries); }
   function saveTasks(){ Storage.set('tasks', tasks); }
-
   function reloadAll(){
-    entries = Storage.get('entries', []);
-    tasks = Storage.get('tasks', []);
-    Revision.reload();
-    Syllabus.reload();
-    render();
-    Revision.render();
-    Syllabus.render();
-    Calendar.render();
-    Notes.render();
-    Goals.render();
-    Gamification.render();
-  }
-
+  entries = Storage.get('entries', []) || [];
+  tasks = Storage.get('tasks', []) || [];
+  Revision.reload();
+  Syllabus.reload();
+  render();
+  Revision.render();
+  Syllabus.render();
+  Calendar.render();
+  Notes.render();
+  Goals.render();
+  Gamification.render();
+}
+ 
   function inRange(ts){
     const d = new Date(ts), n = new Date();
     if(range === 'today') return d.toDateString() === n.toDateString();
