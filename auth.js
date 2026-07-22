@@ -29,6 +29,7 @@ const CloudSync = (function(){
     try{
       const batch = db.batch();
       Object.keys(payload).forEach(key => {
+        if(payload[key] === null || payload[key] === undefined) return;
         const ref = db.collection('users').doc(currentUser.uid).collection('data').doc(key);
         batch.set(ref, { value: JSON.stringify(payload[key]), updatedAt: Date.now() });
       });
@@ -47,14 +48,20 @@ const CloudSync = (function(){
     const snap = await db.collection('users').doc(currentUser.uid).collection('data').get();
     const data = {};
     snap.forEach(doc => {
-      try{ data[doc.id] = JSON.parse(doc.data().value); }catch(e){}
+      try{
+        const parsed = JSON.parse(doc.data().value);
+        if(parsed !== null && parsed !== undefined) data[doc.id] = parsed;
+      }catch(e){}
     });
     return data;
   }
 
   async function migrateGuestData(){
     const local = {};
-    Storage.KEYS.forEach(k => local[k] = Storage.get(k, null));
+    Storage.KEYS.forEach(k => {
+      const v = Storage.get(k, null);
+      if(v !== null && v !== undefined) local[k] = v;
+    });
     await pushAll(local);
     Utils.toast('Your local data has been synced to your account', 'success');
   }
