@@ -33,7 +33,9 @@ const Storage = (function(){
   function get(key, fallback){
     try{
       const raw = localStorage.getItem(PREFIX + key);
-      return raw ? JSON.parse(raw) : fallback;
+      if(raw === null) return fallback;
+      const parsed = JSON.parse(raw);
+      return (parsed === null || parsed === undefined) ? fallback : parsed;
     }catch(e){
       console.warn('Storage.get failed for', key, e);
       return fallback;
@@ -106,9 +108,8 @@ const Storage = (function(){
 
   function replaceAll(dataObj){
     KEYS.forEach(k => {
-      if(dataObj[k] !== undefined){
-        try{ localStorage.setItem(PREFIX + k, JSON.stringify(dataObj[k])); }catch(e){}
-      }
+      if(dataObj[k] === undefined || dataObj[k] === null) return;
+      try{ localStorage.setItem(PREFIX + k, JSON.stringify(dataObj[k])); }catch(e){}
     });
   }
 
