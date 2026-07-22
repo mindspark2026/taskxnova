@@ -394,11 +394,11 @@ const AppSettings = (function(){
 })();
 
 /* ---------------- Core App ---------------- */
-const App = (function(){
+  const App = (function(){
   const CATS = { "Physics":"#FBBF24", "Chemistry":"#60A5FA", "Maths":"#A78BFA" };
+  let entries = Storage.get('entries', []) || [];
+  let tasks = Storage.get('tasks', []) || [];
 
-  let entries = Storage.get('entries', []);
-  let tasks = Storage.get('tasks', []);
   let range = 'today';
   let currentPage = 'dashboard';
   let reminderDismissed = false;
